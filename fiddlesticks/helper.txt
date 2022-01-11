@@ -1,0 +1,4 @@
+GET to retrieve a resource;
+PUT to change the state of or update a resource, which can be an object, file or block;
+POST to create that resource; and
+DELETE to remove it.
