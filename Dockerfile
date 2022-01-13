@@ -3,7 +3,6 @@ FROM python:3.9
 
 # 
 WORKDIR /fiddlemain
-
 # 
 COPY ./requirements.txt /fiddlemain/requirements.txt
 COPY ./fiddlesticks /fiddlemain/fiddlesticks
