@@ -6,7 +6,6 @@ import time
 import threading
 import pickle
 import datetime as dt
-from kornia import feature
 import numpy as np
 import json
 import os
