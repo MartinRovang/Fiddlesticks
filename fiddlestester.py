@@ -2,8 +2,10 @@
 
 import base64
 import requests
+import json
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 
 url = 'http://127.0.0.1:8000/'
@@ -22,11 +24,9 @@ data_base64 = base64.b64encode(data_.tobytes()).decode('utf-8')
 
 # decode numpy array
 data_decoded = np.frombuffer(base64.b64decode(data_base64), dtype=np.float64)
-print(data_decoded)
+print(data_decoded.shape)
 #
 # %%
-import requests
-import json
 url_make_model = url + 'create_new_model'
 
 body = {'data': data_base64}
@@ -74,4 +74,5 @@ statistic, p = stats.ks_2samp(trian, newsample)
 print(statistic, p)
 # %%
 print(int(np.sqrt(100*250*250)))
+
 # %%

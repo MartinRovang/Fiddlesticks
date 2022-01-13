@@ -10,3 +10,4 @@ Resources:
 - https://arxiv.org/pdf/2004.05785.pdf
 - https://umap-learn.readthedocs.io/en/latest/how_umap_works.html
 - https://scikit-multiflow.readthedocs.io/en/stable/api/api.html
+- https://app.gitbook.com/s/EysdooOE03G65OdltITT/

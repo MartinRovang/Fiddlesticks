@@ -1,0 +1,6 @@
+fastapi
+asyncio
+numpy
+scipy
+evidently
+pandas
