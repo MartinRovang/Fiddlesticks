@@ -65,5 +65,7 @@ def checkdrift(path = r'C:\Users\Gimpe\Google Drive\Master -Signal_processingWOR
     return r.json()
 
 
+
 projectid = initmodel(path = r'/mnt/HDD16TB/martinsr/DatasetWMH211018_v2/train')
-print(checkdrift(path = r'/mnt/HDD16TB/martinsr/DatasetWMH211018_v2/test'), modelid = projectid)
+print(projectid)
+print(checkdrift(path = r'/mnt/HDD16TB/martinsr/DatasetWMH211018_v2/test', modelid = projectid))
