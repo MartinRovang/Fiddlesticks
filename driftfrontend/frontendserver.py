@@ -15,14 +15,13 @@ def project(uuid4):
     for date in dates:
         lock = True
         for feature in data[date]:
-            if data[date][feature]['Drift detected'] == "True":
+            if data[date][feature]['Drift detected'] == 'True':
                 detection.append('True')
                 lock = False
                 break
         if lock:
             detection.append('False')
     
-    print(detection)
     return render_template('project_template.html', dates=dates, projectid = str(uuid4), detection = detection)
 
 

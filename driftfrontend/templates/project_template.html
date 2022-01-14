@@ -2,10 +2,10 @@
 <img src="/static/logo.png" alt="logo" width="150" height="150">
 
 <table>
+    <tr>
     {% for date in dates %}
-    
-    <p><a href="{{projectid}}/report/{{ date }}">{{ date }}</a>  Drift Detected: {{detection[loop.index0]}}</p>
+    <p><a href="{{projectid}}/report/{{ date }}">{{ date }}</a> <a style="color:{{'red' if detection[loop.index0] == 'True' else 'green'}};"> {{'Detected' if detection[loop.index0] == 'True' else 'Not Detected'}}</a></p>
         {% endfor %}
-      </tr>
+</tr>
   </table>
 
