@@ -21,6 +21,7 @@ from evidently.tabs import (
     DataDriftTab
 )
 
+
 class InitModel(BaseModel):
     data: str
 
@@ -91,7 +92,25 @@ async def check_drift(data: CheckDriftPost):
             
             data_report = Dashboard(tabs=[DataDriftTab()])
             data_report.calculate(model_data['reference_data'], reference_data_target, column_mapping = None)
-            data_report.save(f"reports/{model_id}.html")
+            time_now = dt.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            data_report.save(f"reports/{model_id}_report_{time_now}.html")
+            if os.path.exists('reports/'+model_id+'_historical.pkl'):
+                with open('reports/'+model_id+'_historical.pkl', 'rb') as f:
+                    historical_data = pickle.load(f)
+                historical_data[time_now] = {}
+                for feature_train in response:
+                    historical_data[time_now][feature_train] = {'Drift detected': f'{reject_response}', 'pvalue':f'{p:.3f}'}
+                
+                with open('reports/'+model_id+'_historical.pkl', 'wb') as f:
+                    pickle.dump(historical_data, f)
+            else:
+                historical_data = {}
+                historical_data[time_now] = {}
+                for feature_train in response:
+                    historical_data[time_now][feature_train] = {'Drift detected': f'{reject_response}', 'pvalue':f'{p:.3f}'}
+                with open('reports/'+model_id+'_historical.pkl', 'wb') as f:
+                    pickle.dump(historical_data, f)
+            
             return response
         else:
             raise HTTPException(status_code=404, detail="Model id does not exist")

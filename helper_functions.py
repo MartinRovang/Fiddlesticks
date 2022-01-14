@@ -31,7 +31,7 @@ def initmodel(path = r'C:\Users\Gimpe\Google Drive\Master -Signal_processingWORK
     
     return r.json()['Status']
 
-def checkdrift(path = r'C:\Users\Gimpe\Google Drive\Master -Signal_processingWORK\Masteroppgave\Main_code\data\test', modelid = 'None', N = 10):
+def checkdrift(path = r'C:\Users\Gimpe\Google Drive\Master -Signal_processingWORK\Masteroppgave\Main_code\data\test', modelid = 'None', N = 3):
     import glob
     import numpy as np
     import nibabel as nib
@@ -64,8 +64,27 @@ def checkdrift(path = r'C:\Users\Gimpe\Google Drive\Master -Signal_processingWOR
     
     return r.json()
 
+# projectid = initmodel()
+# print(projectid)
+# print(checkdrift(modelid = projectid))
+print(checkdrift(modelid = 'e7c8c6ae-4a06-4904-85c9-ae5f506659f9'))
+
+# projectid = initmodel(path = r'/mnt/HDD16TB/martinsr/DatasetWMH211018_v2/train')
+# print(projectid)
+# print(checkdrift(path = r'/mnt/HDD16TB/martinsr/DatasetWMH211018_v2/test', modelid = projectid))
 
 
-projectid = initmodel(path = r'/mnt/HDD16TB/martinsr/DatasetWMH211018_v2/train')
-print(projectid)
-print(checkdrift(path = r'/mnt/HDD16TB/martinsr/DatasetWMH211018_v2/test', modelid = projectid))
+
+# #%% 
+
+# import socketio
+# import numpy as np
+# import json
+# sio = socketio.Client()
+
+# sio.connect('http://127.0.0.1:5000', wait = True)
+
+# packet = json.dumps({'data': [1, 2, 3]})
+
+# sio.emit('msg',  packet)
+# # %%

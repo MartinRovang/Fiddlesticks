@@ -1,0 +1,11 @@
+
+<img src="/static/logo.png" alt="logo" width="150" height="150">
+
+<table>
+    {% for date in dates %}
+    
+    <p><a href="{{projectid}}/report/{{ date }}">{{ date }}</a>  Drift Detected: {{detection[loop.index0]}}</p>
+        {% endfor %}
+      </tr>
+  </table>
+

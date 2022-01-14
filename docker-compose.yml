@@ -1,15 +1,25 @@
 version: '3.3'
 
+
+
 services:
   consul_fid:
     ports:
       - '8080:8080'
-    build:
+    build: 
       context: .
+      dockerfile: ./docker/fiddlesticks/Dockerfile
     volumes:
-      - type: bind
-        source: ./reports # Change this to your mount folder
-        target: /fiddlemain/reports
+        - data:/fiddlemain/reports
+  
+  consul_evidently:
+    ports:
+      - '5000:5000'
+    build: 
+      context: .
+      dockerfile: ./docker/evidently/Dockerfile
+    volumes:
+        - data:/driftfrontend/templates 
 
-
-
+volumes:
+    data:
