@@ -1,5 +1,10 @@
 <img src="logofiles/logo2.png" alt="Logo">
 
+
+![image](https://user-images.githubusercontent.com/24882057/149534509-d230017c-931a-4fe3-94a4-98a6b65564f9.png)
+![image](https://user-images.githubusercontent.com/24882057/149534546-9283a272-9dc8-47bd-8c7c-0355fb5c6aa1.png)
+![image](https://user-images.githubusercontent.com/24882057/149534566-9287d61b-8c2f-44a1-8740-2f7f44bd1d90.png)
+
 Resources:
 - https://www.aporia.com/blog/concept-drift-detection-methods/
 - https://practicalml.net/Detecting-data-drift/
