@@ -73,9 +73,27 @@ print(checkdrift(modelid = projectid))
 # print(projectid)
 # print(checkdrift(path = r'/mnt/HDD16TB/martinsr/DatasetWMH211018_v2/test', modelid = projectid))
 
+#%%
+import glob
+import nibabel as nib
+import matplotlib.pyplot as plt
+import numpy as np
+path = r'C:\Users\Gimpe\Google Drive\Master -Signal_processingWORK\Masteroppgave\Main_code\data\test'
+files_list = glob.glob(path + '/*')
+file = files_list[0]
+tmp_data = nib.load(file+'/FLAIR.nii.gz').get_fdata().flatten()
 
+plt.hist(tmp_data)
+plt.show()
+N = int(np.sqrt(len(tmp_data)))
+tmp_data_sampled = np.random.choice(tmp_data, N , replace=False)
 
-# #%% 
+plt.hist(tmp_data)
+plt.show()
+plt.hist(tmp_data_sampled)
+plt.show()
+
+#%% 
 
 # import socketio
 # import numpy as np
@@ -88,3 +106,5 @@ print(checkdrift(modelid = projectid))
 
 # sio.emit('msg',  packet)
 # # %%
+
+# %%
