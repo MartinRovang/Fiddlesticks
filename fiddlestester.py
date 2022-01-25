@@ -29,20 +29,35 @@ print(data_decoded.shape)
 # %%
 url_make_model = url + 'create_new_model'
 
-body = {'data': data_base64}
+body = {'description': 'This is a test model'}
 headers = {'content-type': 'application/json'}
 
-r = requests.post(url_make_model, data=json.dumps(body))#, headers=headers)
+r = requests.post(url_make_model, data = json.dumps(body))#, headers=headers)
 
 
 print(r.text)
+
+#%%
+import pickle
+for i in range(0, 100):
+    url_check = url + 'add_reference_data'
+    data_not_equal = np.random.normal(4, 3, (1, 250, 250))
+    out = pickle.dumps(data_not_equal)
+    data_base64_not_equal = base64.b64encode(out).decode('utf-8')
+
+    body = {'data': data_base64_not_equal, 'projectid': 'fa2d853f-7ed7-410c-91eb-cc0780a2c3d7'}
+    r = requests.post(url_check, data=json.dumps(body))
+
+    print(r.text)
+
 # %%
+from scipy import stats
 
 url_check = url + 'check_drift'
-data_not_equal = np.random.normal(4, 3, (1, 250, 250)).flatten()
-data_ = np.random.choice(data_not_equal, size = int(np.sqrt(len(data_not_equal))))
-data_base64_not_equal = base64.b64encode(data_not_equal.tobytes()).decode('utf-8')
-body = {'data': data_base64_not_equal, 'projectid': '555be102-0760-4137-920b-3c19bf23a9ad'}
+data_not_equal = np.random.normal(1, 5, (1, 250, 250))
+out = pickle.dumps(data_not_equal)
+data_base64_not_equal = base64.b64encode(out).decode('utf-8')
+body = {'data': data_base64_not_equal, 'projectid': 'fa2d853f-7ed7-410c-91eb-cc0780a2c3d7'}
 r = requests.post(url_check, data=json.dumps(body))
 
 
@@ -75,4 +90,37 @@ print(statistic, p)
 # %%
 print(int(np.sqrt(100*250*250)))
 
+# %%
+
+import seaborn as sns
+entropy_array = []
+mean_array = []
+std_array = []
+for i in range(0, 100):
+    # test = np.random.normal(i, 2+i//3, (1, 250, 250)).flatten() + np.random.uniform(i, 1+i//3, (1, 250, 250)).flatten()
+    test = np.random.uniform(1, 1+i//3, (1, 250, 250)).flatten()
+    print(test)
+    test_ent = test - np.min(test)
+    test_ent = test_ent / np.max(test_ent)
+    entropy_array.append(stats.entropy(test_ent))
+    # mean_array.append(np.mean(test))
+    # std_array.append(np.std(test))
+
+
+data = {'entropy': entropy_array, 'mean': mean_array, 'std': std_array}
+
+
+sns.kdeplot(data = data, shade=True)
+plt.show()
+    
+# %%
+
+test = np.random.normal(100, 5, 10000).flatten()
+test = np.random.uniform(1, 2, 10000).flatten()
+# test_ent = test - np.min(test)
+# test_ent = test_ent / np.max(test_ent)
+print(stats.entropy(test, base=2))
+
+plt.hist(test)
+plt.show()
 # %%
