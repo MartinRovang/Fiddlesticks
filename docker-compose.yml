@@ -10,7 +10,7 @@ services:
       context: .
       dockerfile: ./docker/fiddlesticks/Dockerfile
     volumes:
-        - data:/fiddlemain/reports
+        - data:/fiddlemain/fiddlesticks/database/
   
   consul_evidently:
     ports:
@@ -19,7 +19,7 @@ services:
       context: .
       dockerfile: ./docker/evidently/Dockerfile
     volumes:
-        - data:/driftfrontend/templates 
+        - data:/driftfrontend/templates
 
 volumes:
     data:

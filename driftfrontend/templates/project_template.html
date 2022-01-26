@@ -1,11 +1,13 @@
 
 <img src="/static/logo.png" alt="logo" width="150" height="150">
 
+
 <table>
     <tr>
     {% for date in dates %}
-    <p><a href="{{projectid}}/report/{{ date }}">{{ date }}</a> <a style="color:{{'red' if detection[loop.index0] == 'True' else 'green'}};"> {{'Detected' if detection[loop.index0] == 'True' else 'Not Detected'}}</a></p>
+    <p>{{ date }} <a style="color:{{'red' if detection[loop.index0] == 'True' else 'green'}};"> {{'Detected' if detection[loop.index0] == 'True' else 'Not Detected'}}</a> [{{ detection_numbers[loop.index0] }} /{{ numberoffeatures }}]</p>
         {% endfor %}
 </tr>
   </table>
 
+  <img src="/static/{{projectid}}_historical.png" alt="logo" width="800" height="600">

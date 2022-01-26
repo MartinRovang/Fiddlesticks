@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 
 
 
-url = 'http://127.0.0.1:8000/'
+url = 'http://127.0.0.1:8080/'
 x = requests.get(url)
 print(x.text)
 
@@ -41,27 +41,28 @@ print(r.text)
 import pickle
 for i in range(0, 100):
     url_check = url + 'add_reference_data'
-    data_not_equal = np.random.normal(4, 3, (1, 250, 250))
+    data_not_equal = np.random.normal(np.random.randint(1,10), np.random.randint(1,4), (1, 250, 250))
     out = pickle.dumps(data_not_equal)
     data_base64_not_equal = base64.b64encode(out).decode('utf-8')
 
-    body = {'data': data_base64_not_equal, 'projectid': 'fa2d853f-7ed7-410c-91eb-cc0780a2c3d7'}
+    body = {'data': data_base64_not_equal, 'projectid': '024f2853-7a2c-4494-a369-805758bb2354'}
     r = requests.post(url_check, data=json.dumps(body))
-
     print(r.text)
 
 # %%
 from scipy import stats
+import time
 
-url_check = url + 'check_drift'
-data_not_equal = np.random.normal(1, 5, (1, 250, 250))
-out = pickle.dumps(data_not_equal)
-data_base64_not_equal = base64.b64encode(out).decode('utf-8')
-body = {'data': data_base64_not_equal, 'projectid': 'fa2d853f-7ed7-410c-91eb-cc0780a2c3d7'}
-r = requests.post(url_check, data=json.dumps(body))
+for i in range(0, 100):
+    url_check = url + 'check_drift'
+    data_base64_not_equal = np.random.normal(np.random.randint(1,21), np.random.randint(1,9), (1, 250, 250))
+    out = pickle.dumps(data_base64_not_equal)
+    out = base64.b64encode(out).decode('utf-8')
 
-
-print(r.text)
+    body = {'data': out, 'projectid': '024f2853-7a2c-4494-a369-805758bb2354'}
+    r = requests.post(url_check, data=json.dumps(body))
+    print(r.text)
+    time.sleep(5)
 # %%
 import requests
 import json

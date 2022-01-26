@@ -82,12 +82,14 @@ async def create_model(data: InitRef):
                 projectfile = pickle.load(open('fiddlesticks/database/'+projectid+'.pkl', 'rb'))
                 # Flatten and normalize data
                 base64encoded_reference_data = base64encoded_reference_data.flatten()
-                base64encoded_reference_data = base64encoded_reference_data - np.min(base64encoded_reference_data)
-                entropy_value = stats.entropy(base64encoded_reference_data)
+                base64encoded_reference_data_ent = base64encoded_reference_data - np.min(base64encoded_reference_data)
+                entropy_value = stats.entropy(base64encoded_reference_data_ent)
                 if 'reference_data' not in projectfile:
-                    projectfile['reference_data'] = {'entropy': np.array([entropy_value])}
+                    projectfile['reference_data'] = {'entropy': np.array([entropy_value]), 'mean': np.array([np.mean(base64encoded_reference_data)]), 'std': np.array([np.std(base64encoded_reference_data)])}
                 else:
                     projectfile['reference_data']['entropy'] = np.append(projectfile['reference_data']['entropy'], entropy_value)
+                    projectfile['reference_data']['mean'] = np.append(projectfile['reference_data']['mean'], np.mean(base64encoded_reference_data))
+                    projectfile['reference_data']['std'] = np.append(projectfile['reference_data']['std'], np.std(base64encoded_reference_data))
                 with open('fiddlesticks/database/'+str(projectid)+'.pkl', 'wb') as f:
                     pickle.dump(projectfile, f)
                 return {'Status': f'Added ref data to: {projectid}, entropy: {entropy_value}'}
@@ -112,10 +114,11 @@ async def check_drift(data: CheckDriftPost):
         if is_it_numpy:
             if os.path.exists('fiddlesticks/database/'+model_id+'.pkl'):
                 reference_data_target = reference_data_target.flatten()
-                reference_data_target = reference_data_target - np.min(reference_data_target)
-                reference_data_target = np.array([stats.entropy(reference_data_target)])
+                reference_data_target_ent = reference_data_target - np.min(reference_data_target)
+                reference_data_target_ent = np.array([stats.entropy(reference_data_target_ent)])
 
-                reference_data_target = {'entropy': reference_data_target}
+                reference_data_target = {'entropy': reference_data_target_ent, 'mean': np.array([np.mean(reference_data_target)]), 'std': np.array([np.std(reference_data_target)])}
+                print(reference_data_target)
                 with open('fiddlesticks/database/'+model_id+'.pkl', 'rb') as f:
                     model_data = pickle.load(f)
                 for feature_train in model_data['reference_data']:
@@ -123,29 +126,34 @@ async def check_drift(data: CheckDriftPost):
                     target_feature = reference_data_target[feature_train]
                     stat, p = stats.ks_2samp(ref_feature, target_feature)
                     reject_response = p < 0.05
-                    response[feature_train] = {'Reject Null': f'{reject_response}', 'pvalue':f'{p:.3f}'}        
+                    response[feature_train] = {'Reject Null': f'{reject_response}', 'pvalue':f'{p:.3f}'}
 
-                reference_data = pd.DataFrame(model_data['reference_data'], columns= ['entropy'])
-                reference_data_target = pd.DataFrame(reference_data_target, columns= ['entropy'])
+                reference_data = pd.DataFrame(model_data['reference_data'], columns= list(reference_data_target.keys()))
+                reference_data_target = pd.DataFrame(reference_data_target, columns= list(reference_data_target.keys()))
                 data_report = Dashboard(tabs=[DataDriftTab()])
                 data_report.calculate(reference_data, reference_data_target, column_mapping = None)
                 time_now = dt.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-                data_report.save(f"reports/{model_id}_report_{time_now}.html")
-                if os.path.exists('reports/'+model_id+'_historical.pkl'):
-                    with open('reports/'+model_id+'_historical.pkl', 'rb') as f:
+                data_report.save(f"fiddlesticks/database/{model_id}_report_{time_now}.html")
+
+                
+                if os.path.exists('fiddlesticks/database/'+model_id+'_historical.pkl'):
+                    with open('fiddlesticks/database/'+model_id+'_historical.pkl', 'rb') as f:
                         historical_data = pickle.load(f)
                     historical_data[time_now] = {}
                     for feature_train in response:
-                        historical_data[time_now][feature_train] = {'Drift detected': f'{reject_response}', 'pvalue':f'{p:.3f}'}
+                        historical_data[time_now][feature_train] = {'Drift detected': f'{response[feature_train]["Reject Null"]}', 'pvalue':f'{response[feature_train]["pvalue"]}'}
+                        historical_data[time_now]['data'] = reference_data_target
                     
-                    with open('reports/'+model_id+'_historical.pkl', 'wb') as f:
+                    with open('fiddlesticks/database/'+model_id+'_historical.pkl', 'wb') as f:
                         pickle.dump(historical_data, f)
                 else:
                     historical_data = {}
                     historical_data[time_now] = {}
                     for feature_train in response:
-                        historical_data[time_now][feature_train] = {'Drift detected': f'{reject_response}', 'pvalue':f'{p:.3f}'}
-                    with open('reports/'+model_id+'_historical.pkl', 'wb') as f:
+                        historical_data[time_now][feature_train] = {'Drift detected': f'{response[feature_train]["Reject Null"]}', 'pvalue':f'{response[feature_train]["pvalue"]}'}
+                        historical_data[time_now]['data'] = reference_data_target
+                    
+                    with open('fiddlesticks/database/'+model_id+'_historical.pkl', 'wb') as f:
                         pickle.dump(historical_data, f)
                 return response
             else:
